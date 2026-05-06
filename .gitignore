@@ -1,0 +1,32 @@
+.env
+
+# Compilados y empaquetados
+target/
+build/
+out/
+*.class
+*.jar
+*.war
+*.ear
+
+# Logs
+*.log
+
+# Archivos del IDE (IntelliJ, Eclipse, VS Code)
+.idea/
+*.iml
+.classpath
+.project
+.settings/
+.vscode/
+.nb-conf
+nbproject/
+
+# Configuración local de Spring
+# (A veces quieres ignorar tus contraseñas locales de la base de datos)
+application-local.properties
+application-dev.properties
+
+# Archivos del sistema operativo
+.DS_Store
+Thumbs.db
