@@ -1,21 +1,26 @@
 package com.RestoReserve.api.model;
 
+import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
-import jakarta.persistence.Column;
-import jakarta.persistence.Id;
-import java.util.List;
+import lombok.Setter;
 
 @Entity
 @Table(name = "usuario")
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 
@@ -25,24 +30,20 @@ public class Usuario {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false  )
+    @Column(nullable = false, length = 100)
     private String nombre;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false, unique = true, length = 100)
     private String email;
 
-    @Column(nullable = false , unique = true)
-    private int telefono;
+    @Column(nullable = false, unique = true, length = 15)
+    private String telefono;
 
-    @Column
+    @Column(length = 300)
     private String observacion;
 
-    @OneToMany
-    private List<mesa> mesas;
-        
-    @OneToMany
-    private List<reserva> reservas;
-
-
+    @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL)
+    @JsonManagedReference
+    private List<Reserva> reserva;
 
 }
