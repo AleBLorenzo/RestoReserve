@@ -4,22 +4,26 @@ import java.util.List;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Table(name = "mesa")
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 
-public class mesa {
+public class Mesa {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,9 +35,10 @@ public class mesa {
     @Column(nullable = false)
     private int capacidad;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private estadoMesa estado = estadoMesa.LIBRE;
 
-    @ManyToMany
-    private List<reserva> reservas;
+    @ManyToMany(mappedBy = "mesas")
+    private List<Reserva> reservas;
 }
