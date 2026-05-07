@@ -31,7 +31,7 @@ public class Trabajador {
     private tipoEmpelado tipo;
 
     @Column(nullable = false, length = 30)
-    private String user;
+    private String nombreusuario;
 
     @Column(name = "login_user", nullable = false)
     private String contrasena;
