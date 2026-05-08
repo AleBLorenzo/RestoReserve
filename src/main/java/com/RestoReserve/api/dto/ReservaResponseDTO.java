@@ -1,10 +1,10 @@
 package com.RestoReserve.api.dto;
 
-import com.RestoReserve.api.model.Reserva;
-
 import java.time.LocalDateTime;
 
-public record ReservationResponseDTO(
+import com.RestoReserve.api.model.Reserva;
+
+public record ReservaResponseDTO(
     Long id,
     LocalDateTime fechahora,
     int numeropersonas,
@@ -13,13 +13,13 @@ public record ReservationResponseDTO(
     String mesaNumero,
     String clienteNombre
 ) {
-    public static ReservationResponseDTO fromEntity(Reserva reserva) {
+    public static ReservaResponseDTO fromEntity(Reserva reserva) {
         String mesaNumero = null;
         if (reserva.getMesas() != null && !reserva.getMesas().isEmpty()) {
             mesaNumero = "Mesa " + reserva.getMesas().iterator().next().getNumeroDeMesa();
         }
         
-        return new ReservationResponseDTO(
+        return new ReservaResponseDTO(
             reserva.getId(),
             reserva.getFechahora(),
             reserva.getNumeropersonas(),
