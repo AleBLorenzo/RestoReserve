@@ -1,10 +1,13 @@
 package com.RestoReserve.api.service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.RestoReserve.api.dto.MesaRequestDTO;
+import com.RestoReserve.api.dto.MesaResponseDTO;
 import com.RestoReserve.api.model.Mesa;
 import com.RestoReserve.api.model.EstadoMesa;
 import com.RestoReserve.api.repository.MesaRepository;
@@ -15,36 +18,42 @@ public class MesaService {
     @Autowired
     private MesaRepository mesaRepository;
 
-    public List<Mesa> listar() {
-        return mesaRepository.findAll();
+    public List<MesaResponseDTO> listar() {
+        return mesaRepository.findAll().stream()
+            .map(MesaResponseDTO::fromEntity)
+            .collect(Collectors.toList());
     }
 
-    public Mesa obtenerPorId(Long id) {
-        return mesaRepository.findById(id)
+    public MesaResponseDTO obtenerPorId(Long id) {
+        Mesa mesa = mesaRepository.findById(id)
             .orElseThrow(() -> new RuntimeException("Mesa no encontrada con id: " + id));
+        return MesaResponseDTO.fromEntity(mesa);
     }
 
-    public Mesa guardar(Mesa mesa) {
-        if (mesa.getNumeroDeMesa() <= 0) {
-            throw new IllegalArgumentException("El número de mesa debe ser mayor a 0");
-        }
-        if (mesa.getCapacidad() <= 0) {
-            throw new IllegalArgumentException("La capacidad debe ser mayor a 0");
-        }
-        return mesaRepository.save(mesa);
+    public MesaResponseDTO guardar(MesaRequestDTO dto) {
+        Mesa mesa = new Mesa();
+        mesa.setNumeroDeMesa(dto.numeroDeMesa());
+        mesa.setCapacidad(dto.capacidad());
+        mesa.setEstado(EstadoMesa.LIBRE);
+        mesa = mesaRepository.save(mesa);
+        return MesaResponseDTO.fromEntity(mesa);
     }
 
-    public Mesa actualizar(Long id, Mesa mesaActualizada) {
-        Mesa existente = obtenerPorId(id);
-        existente.setNumeroDeMesa(mesaActualizada.getNumeroDeMesa());
-        existente.setCapacidad(mesaActualizada.getCapacidad());
-        return mesaRepository.save(existente);
+    public MesaResponseDTO actualizar(Long id, MesaRequestDTO dto) {
+        Mesa existente = mesaRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Mesa no encontrada con id: " + id));
+        existente.setNumeroDeMesa(dto.numeroDeMesa());
+        existente.setCapacidad(dto.capacidad());
+        existente = mesaRepository.save(existente);
+        return MesaResponseDTO.fromEntity(existente);
     }
 
-    public Mesa cambiarEstado(Long id, EstadoMesa estado) {
-        Mesa mesa = obtenerPorId(id);
+    public MesaResponseDTO cambiarEstado(Long id, EstadoMesa estado) {
+        Mesa mesa = mesaRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Mesa no encontrada"));
         mesa.setEstado(estado);
-        return mesaRepository.save(mesa);
+        mesa = mesaRepository.save(mesa);
+        return MesaResponseDTO.fromEntity(mesa);
     }
 
     public void eliminar(Long id) {
