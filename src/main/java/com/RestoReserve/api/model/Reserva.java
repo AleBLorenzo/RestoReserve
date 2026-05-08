@@ -1,10 +1,8 @@
 package com.RestoReserve.api.model;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.List;
-
-import com.fasterxml.jackson.annotation.JsonBackReference;
+import java.util.HashSet;
+import java.util.Set;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -19,6 +17,7 @@ import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -29,39 +28,38 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 
 public class Reserva {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @EqualsAndHashCode.Include
     private Long id;
 
     @Column(nullable = false)
-    private LocalDate fecha;
-
-    @Column(nullable = false)
-    private LocalDateTime horainicio;
-
-    @Column(nullable = false)
-    private LocalDateTime horafin;
+    private LocalDateTime fechahora;
 
     @Column(nullable = false)
     private int numeropersonas;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private estadoReserva estado = estadoReserva.PENDIENTE;
+    private EstadoReserva estado = EstadoReserva.PENDIENTE;
 
     @Column(length = 500)
     private String comentario;
 
     @ManyToMany
-    @JoinTable(name = "reserva_mesa", joinColumns = @JoinColumn(name = "reserva_id"), inverseJoinColumns = @JoinColumn(name = "mesa_id"))
-    private List<Mesa> mesas;
+    @JoinTable(name = "reserva_mesa")
+    private Set<Mesa> mesas = new HashSet<>();
 
-    @JsonBackReference
     @ManyToOne
     @JoinColumn(name = "usuario_id")
     private Usuario usuario;
+
+    @ManyToOne
+    @JoinColumn(name = "trabajador_id")
+    private Trabajador gestionadoPor;
 
 }
