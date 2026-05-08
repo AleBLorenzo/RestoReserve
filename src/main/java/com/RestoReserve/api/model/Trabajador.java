@@ -4,6 +4,8 @@ import java.util.List;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -30,13 +32,14 @@ public class Trabajador {
     @Column(nullable = false, length = 100)
     private String nombre;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private tipoEmpelado tipo;
+    private TipoEmpelado tipo;
 
     @Column(nullable = false, length = 30)
     private String nombreusuario;
 
-    @Column(name = "login_user", nullable = false)
+    @Column(name = "contrasena", nullable = false)
     private String contrasena;
 
     @OneToMany(mappedBy = "trabajador")
