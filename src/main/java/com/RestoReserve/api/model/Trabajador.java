@@ -1,5 +1,7 @@
 package com.RestoReserve.api.model;
 
+import java.util.List;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -7,6 +9,7 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -38,5 +41,8 @@ public class Trabajador {
 
     @Column(name = "contrasena", nullable = false)
     private String contrasena;
+
+    @OneToMany(mappedBy = "trabajador")
+    private List<Mesa> mesas;
 
 }
