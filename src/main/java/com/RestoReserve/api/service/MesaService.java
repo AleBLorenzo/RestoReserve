@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.RestoReserve.api.model.Mesa;
+import com.RestoReserve.api.model.EstadoMesa;
 import com.RestoReserve.api.repository.MesaRepository;
 
 @Service
@@ -38,6 +39,12 @@ public class MesaService {
         existente.setNumeroDeMesa(mesaActualizada.getNumeroDeMesa());
         existente.setCapacidad(mesaActualizada.getCapacidad());
         return mesaRepository.save(existente);
+    }
+
+    public Mesa cambiarEstado(Long id, EstadoMesa estado) {
+        Mesa mesa = obtenerPorId(id);
+        mesa.setEstado(estado);
+        return mesaRepository.save(mesa);
     }
 
     public void eliminar(Long id) {
