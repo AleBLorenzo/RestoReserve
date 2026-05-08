@@ -39,6 +39,9 @@ public class Usuario {
     @Column(length = 300)
     private String observacion;
 
+    @Column(nullable = false)
+    private TipoUsuario rol = TipoUsuario.USER;
+
     @OneToMany(mappedBy = "usuario")
     private List<Reserva> reservas;
 
