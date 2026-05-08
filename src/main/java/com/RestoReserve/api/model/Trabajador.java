@@ -36,7 +36,7 @@ public class Trabajador {
     @Column(nullable = false, length = 30)
     private String nombreusuario;
 
-    @Column(name = "login_user", nullable = false)
+    @Column(name = "contrasena", nullable = false)
     private String contrasena;
 
 }

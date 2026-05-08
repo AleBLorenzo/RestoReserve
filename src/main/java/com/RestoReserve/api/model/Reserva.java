@@ -51,7 +51,7 @@ public class Reserva {
     private String comentario;
 
     @ManyToMany
-    @JoinTable(name = "reserva_mesa")
+    @JoinTable(name = "reserva_mesa", joinColumns = @JoinColumn(name = "reserva_id"), inverseJoinColumns = @JoinColumn(name = "mesa_id"))
     private Set<Mesa> mesas = new HashSet<>();
 
     @ManyToOne
