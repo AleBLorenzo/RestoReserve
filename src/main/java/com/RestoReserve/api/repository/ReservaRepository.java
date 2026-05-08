@@ -1,18 +1,23 @@
 package com.RestoReserve.api.repository;
 
-import java.time.LocalDate;
-import java.util.Optional;
+import java.time.LocalDateTime;
+import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import com.RestoReserve.api.model.EstadoReserva;
 import com.RestoReserve.api.model.Reserva;
 import com.RestoReserve.api.model.Usuario;
 
 @Repository
 public interface ReservaRepository extends JpaRepository<Reserva, Long> {
 
-    Optional<Reserva> findByfecha(LocalDate fecha);
+    List<Reserva> findByFechahora(LocalDateTime fechahora);
 
-    Optional<Reserva> findByUsuario(Usuario usuario);
+    List<Reserva> findByUsuario(Usuario usuario);
+
+    List<Reserva> findByUsuarioEmail(String email);
+    
+    List<Reserva> findByEstado(EstadoReserva estado);
 }

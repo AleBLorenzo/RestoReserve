@@ -11,6 +11,4 @@ import com.RestoReserve.api.model.Mesa;
 public interface MesaRepository extends JpaRepository<Mesa, Long> {
 
     Optional<Mesa> findByNumeroDeMesa(int numeroDeMesa);
-
-    Optional<Mesa> findByCapacidad(int capacidad);
 }
