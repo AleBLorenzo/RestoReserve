@@ -5,8 +5,8 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.RestoReserve.api.model.TipoEmpelado;
 import com.RestoReserve.api.model.Trabajador;
-import com.RestoReserve.api.model.tipoEmpelado;
 import com.RestoReserve.api.repository.TrabajadorRepository;
 
 @Service
@@ -29,7 +29,7 @@ public class TrabajadorService {
             .orElseThrow(() -> new RuntimeException("Trabajador no encontrado: " + nombreusuario));
     }
 
-    public List<Trabajador> buscarPorTipo(tipoEmpelado tipo) {
+    public List<Trabajador> buscarPorTipo(TipoEmpelado tipo) {
         return trabajadorRepository.findByTipo(tipo)
             .map(List::of)
             .orElse(List.of());
