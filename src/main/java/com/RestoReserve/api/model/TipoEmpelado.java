@@ -1,6 +1,6 @@
 package com.RestoReserve.api.model;
 
-public enum tipoEmpelado {
+public enum TipoEmpelado {
 
     ADMIN, MESERO, COCINERO
 
