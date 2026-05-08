@@ -21,12 +21,14 @@ import com.RestoReserve.api.model.EstadoReserva;
 import com.RestoReserve.api.service.ReservaService;
 
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/api/v1/Reservas")
+@RequiredArgsConstructor
 public class ReservaController {
 
-    @Autowired
+  
     private ReservaService ReservaService;
 
     @GetMapping

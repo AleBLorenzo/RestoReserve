@@ -20,13 +20,15 @@ import com.RestoReserve.api.model.EstadoMesa;
 import com.RestoReserve.api.service.MesaService;
 
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+
 import org.springframework.web.bind.annotation.RequestParam;
 
 @RestController
 @RequestMapping("/api/v1/tables")
+@RequiredArgsConstructor
 public class MesaController {
 
-    @Autowired
     private MesaService mesaService;
 
     @GetMapping
