@@ -1,6 +1,6 @@
 package com.RestoReserve.api.model;
 
-public enum estadoReserva {
+public enum EstadoReserva {
 
     PENDIENTE, CONFIRMADA, CANCELADA
 
