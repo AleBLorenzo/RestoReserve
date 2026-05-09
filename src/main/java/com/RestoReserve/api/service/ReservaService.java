@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.RestoReserve.api.dto.ReservaRequestDTO;
 import com.RestoReserve.api.dto.ReservaResponseDTO;
+import com.RestoReserve.api.exception.GlobalExceptionHandler.ResourceNotFoundException;
 import com.RestoReserve.api.model.EstadoReserva;
 import com.RestoReserve.api.model.Mesa;
 import com.RestoReserve.api.model.Reserva;
@@ -47,16 +48,16 @@ public class ReservaService {
 
     public ReservaResponseDTO obtenerPorId(Long id) {
         Reserva reserva = reservaRepository.findById(id)
-            .orElseThrow(() -> new RuntimeException("Reserva no encontrada"));
+            .orElseThrow(() -> new ResourceNotFoundException("Reserva no encontrada"));
         return ReservaResponseDTO.fromEntity(reserva);
     }
 
     public ReservaResponseDTO crear(ReservaRequestDTO dto, String email) {
         Mesa mesa = mesaRepository.findById(dto.tableId())
-            .orElseThrow(() -> new RuntimeException("Mesa no encontrada con id: " + dto.tableId()));
+            .orElseThrow(() -> new ResourceNotFoundException("Mesa no encontrada con id: " + dto.tableId()));
 
         var usuario = usuarioRepository.findByEmail(email)
-            .orElseThrow(() -> new RuntimeException("Usuario no encontrado con email: " + email));
+            .orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado con email: " + email));
 
         Reserva reserva = new Reserva();
         reserva.setFechahora(dto.fechahora());
@@ -72,7 +73,7 @@ public class ReservaService {
 
     public ReservaResponseDTO actualizarEstado(Long id, EstadoReserva estado) {
         Reserva reserva = reservaRepository.findById(id)
-            .orElseThrow(() -> new RuntimeException("Reserva no encontrada"));
+            .orElseThrow(() -> new ResourceNotFoundException("Reserva no encontrada"));
         reserva.setEstado(estado);
         reserva = reservaRepository.save(reserva);
         return ReservaResponseDTO.fromEntity(reserva);
@@ -80,14 +81,14 @@ public class ReservaService {
 
     public void cancelar(Long id) {
         Reserva reserva = reservaRepository.findById(id)
-            .orElseThrow(() -> new RuntimeException("Reserva no encontrada"));
+            .orElseThrow(() -> new ResourceNotFoundException("Reserva no encontrada"));
         reserva.setEstado(EstadoReserva.CANCELADA);
         reservaRepository.save(reserva);
     }
 
     public void eliminar(Long id) {
         if (!reservaRepository.existsById(id)) {
-            throw new RuntimeException("Reserva no encontrada");
+            throw new ResourceNotFoundException("Reserva no encontrada");
         }
         reservaRepository.deleteById(id);
     }
