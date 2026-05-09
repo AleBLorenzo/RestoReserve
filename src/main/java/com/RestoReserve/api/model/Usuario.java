@@ -42,6 +42,9 @@ public class Usuario {
     private String observacion;
 
     @Column(nullable = false)
+    private String contrasena;
+
+    @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private TipoUsuario rol = TipoUsuario.USER;
 
