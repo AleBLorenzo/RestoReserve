@@ -11,7 +11,6 @@ import com.RestoReserve.api.dto.ReservaResponseDTO;
 import com.RestoReserve.api.model.EstadoReserva;
 import com.RestoReserve.api.model.Mesa;
 import com.RestoReserve.api.model.Reserva;
-import com.RestoReserve.api.model.Usuario;
 import com.RestoReserve.api.repository.MesaRepository;
 import com.RestoReserve.api.repository.ReservaRepository;
 import com.RestoReserve.api.repository.UsuarioRepository;
@@ -34,8 +33,8 @@ public class ReservaService {
             .collect(Collectors.toList());
     }
 
-    public List<ReservaResponseDTO> listarPorUsuario(Long usuarioId) {
-        return reservaRepository.findByUsuarioId(usuarioId).stream()
+    public List<ReservaResponseDTO> listarPorEmail(String email) {
+        return reservaRepository.findByUsuarioEmail(email).stream()
             .map(ReservaResponseDTO::fromEntity)
             .collect(Collectors.toList());
     }
@@ -52,12 +51,12 @@ public class ReservaService {
         return ReservaResponseDTO.fromEntity(reserva);
     }
 
-    public ReservaResponseDTO crear(ReservaRequestDTO dto, Long usuarioId) {
+    public ReservaResponseDTO crear(ReservaRequestDTO dto, String email) {
         Mesa mesa = mesaRepository.findById(dto.tableId())
             .orElseThrow(() -> new RuntimeException("Mesa no encontrada con id: " + dto.tableId()));
 
-        Usuario usuario = usuarioRepository.findById(usuarioId)
-            .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+        var usuario = usuarioRepository.findByEmail(email)
+            .orElseThrow(() -> new RuntimeException("Usuario no encontrado con email: " + email));
 
         Reserva reserva = new Reserva();
         reserva.setFechahora(dto.fechahora());
