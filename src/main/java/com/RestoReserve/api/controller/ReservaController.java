@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -21,53 +22,52 @@ import com.RestoReserve.api.model.EstadoReserva;
 import com.RestoReserve.api.service.ReservaService;
 
 import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/api/v1/Reservas")
-@RequiredArgsConstructor
+@RequestMapping("/api/v1/reservations")
 public class ReservaController {
 
-  
-    private ReservaService ReservaService;
+    @Autowired
+    private ReservaService reservaService;
 
     @GetMapping
-    public ResponseEntity<List<ReservaResponseDTO>> listar(
-            @RequestParam(required = false) EstadoReserva estado,
-            @RequestParam(required = false) Long usuarioId) {
-
+    public ResponseEntity<List<ReservaResponseDTO>> listarReservas(
+            Authentication auth,
+            @RequestParam(required = false) EstadoReserva estado) {
+        
         if (estado != null) {
-            return ResponseEntity.ok(ReservaService.listarPorEstado(estado));
+            return ResponseEntity.ok(reservaService.listarPorEstado(estado));
         }
-        if (usuarioId != null) {
-            return ResponseEntity.ok(ReservaService.listarPorUsuario(usuarioId));
+        // USER ve sus reservas, ADMIN ve todas
+        if (auth.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ADMIN"))) {
+            return ResponseEntity.ok(reservaService.listarTodos());
         }
-        return ResponseEntity.ok(ReservaService.listarTodos());
+        return ResponseEntity.ok(reservaService.listarPorEmail(auth.getName()));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ReservaResponseDTO> obtenerPorId(@PathVariable Long id) {
-        return ResponseEntity.ok(ReservaService.obtenerPorId(id));
+    public ResponseEntity<ReservaResponseDTO> obtenerReserva(@PathVariable Long id) {
+        return ResponseEntity.ok(reservaService.obtenerPorId(id));
     }
 
     @PostMapping
-    public ResponseEntity<ReservaResponseDTO> crear(
-            @Valid @RequestBody ReservaRequestDTO dto,
-            @RequestParam Long usuarioId) {
-        ReservaResponseDTO response = ReservaService.crear(dto, usuarioId);
+    public ResponseEntity<ReservaResponseDTO> crearReserva(
+            Authentication auth,
+            @Valid @RequestBody ReservaRequestDTO dto) {
+        ReservaResponseDTO response = reservaService.crear(dto, auth.getName());
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}/estado")
-    public ResponseEntity<ReservaResponseDTO> cambiarEstado(
+    public ResponseEntity<ReservaResponseDTO> cambiarEstadoReserva(
             @PathVariable Long id,
             @RequestParam EstadoReserva estado) {
-        return ResponseEntity.ok(ReservaService.actualizarEstado(id, estado));
+        return ResponseEntity.ok(reservaService.actualizarEstado(id, estado));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> cancelar(@PathVariable Long id) {
-        ReservaService.cancelar(id);
+    public ResponseEntity<Void> cancelarReserva(@PathVariable Long id) {
+        reservaService.cancelar(id);
         return ResponseEntity.noContent().build();
     }
 }
