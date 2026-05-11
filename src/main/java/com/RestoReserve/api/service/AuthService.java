@@ -8,6 +8,9 @@ import com.RestoReserve.api.config.JwtService;
 import com.RestoReserve.api.dto.AuthRequestDTO;
 import com.RestoReserve.api.dto.AuthResponseDTO;
 import com.RestoReserve.api.dto.RegisterRequestDTO;
+import com.RestoReserve.api.exception.GlobalExceptionHandler.BadRequestException;
+import com.RestoReserve.api.exception.GlobalExceptionHandler.UnauthorizedException;
+import com.RestoReserve.api.exception.GlobalExceptionHandler.ConflictException;
 import com.RestoReserve.api.model.Usuario;
 import com.RestoReserve.api.model.TipoUsuario;
 import com.RestoReserve.api.repository.UsuarioRepository;
@@ -26,10 +29,10 @@ public class AuthService {
 
     public AuthResponseDTO login(AuthRequestDTO request) {
         Usuario usuario = usuarioRepository.findByEmail(request.username())
-            .orElseThrow(() -> new RuntimeException("Credenciales inválidas"));
+            .orElseThrow(() -> new UnauthorizedException("Credenciales inválidas"));
 
         if (!passwordEncoder.matches(request.password(), usuario.getContrasena())) {
-            throw new RuntimeException("Credenciales inválidas");
+            throw new UnauthorizedException("Credenciales inválidas");
         }
 
         String token = jwtService.generateToken(usuario.getEmail(), usuario.getRol());
@@ -38,7 +41,7 @@ public class AuthService {
 
     public AuthResponseDTO register(RegisterRequestDTO request) {
         if (usuarioRepository.findByEmail(request.email()).isPresent()) {
-            throw new IllegalArgumentException("El email ya está registrado");
+            throw new ConflictException("El email ya está registrado");
         }
 
         Usuario usuario = new Usuario();
