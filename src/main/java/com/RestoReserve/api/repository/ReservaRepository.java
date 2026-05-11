@@ -4,6 +4,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import com.RestoReserve.api.model.Reserva;
@@ -20,4 +22,11 @@ public interface ReservaRepository extends JpaRepository<Reserva, Long> {
 
     List<Reserva> findByUsuarioEmail(String email);
 
+    // Buscar reservas activas de una mesa en un rango de 2 horas
+    @Query("SELECT r FROM Reserva r WHERE r.estado <> 'CANCELADA' AND :mesa MEMBER OF r.mesas AND r.fechahora BETWEEN :inicio AND :fin")
+    List<Reserva> findReservasEnFranjaHoraria(
+        @Param("mesa") Long mesaId,
+        @Param("inicio") LocalDateTime inicio,
+        @Param("fin") LocalDateTime fin
+    );
 }
