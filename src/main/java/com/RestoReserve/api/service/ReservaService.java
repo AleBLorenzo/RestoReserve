@@ -1,5 +1,6 @@
 package com.RestoReserve.api.service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -19,6 +20,8 @@ import com.RestoReserve.api.repository.UsuarioRepository;
 
 @Service
 public class ReservaService {
+
+    private static final int MARGEN_HORAS = 2;
 
     @Autowired
     private ReservaRepository reservaRepository;
@@ -54,14 +57,32 @@ public class ReservaService {
     }
 
     public ReservaResponseDTO crear(ReservaRequestDTO dto, String email) {
+        // Validar que la fecha no sea en el pasado
+        if (dto.fechahora().isBefore(LocalDateTime.now())) {
+            throw new BadRequestException("No se pueden crear reservas en el pasado");
+        }
+
         Mesa mesa = mesaRepository.findById(dto.tableId())
             .orElseThrow(() -> new ResourceNotFoundException("Mesa no encontrada con id: " + dto.tableId()));
 
         var usuario = usuarioRepository.findByEmail(email)
             .orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado con email: " + email));
 
+        // Validar capacidad
         if (dto.numeropersonas() > mesa.getCapacidad()) {
             throw new BadRequestException("El número de personas excede la capacidad de la mesa (" + mesa.getCapacidad() + ")");
+        }
+
+        // Validar franja horaria (±2 horas)
+        LocalDateTime inicio = dto.fechahora().minusHours(MARGEN_HORAS);
+        LocalDateTime fin = dto.fechahora().plusHours(MARGEN_HORAS);
+        
+        List<Reserva> reservasConflicto = reservaRepository.findReservasEnFranjaHoraria(
+            mesa.getId(), inicio, fin
+        );
+        
+        if (!reservasConflicto.isEmpty()) {
+            throw new BadRequestException("Ya existe una reserva para esta mesa en la franja horaria de " + MARGEN_HORAS + " horas");
         }
 
         Reserva reserva = new Reserva();
