@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.RestoReserve.api.dto.MesaRequestDTO;
 import com.RestoReserve.api.dto.MesaResponseDTO;
+import com.RestoReserve.api.exception.GlobalExceptionHandler.BadRequestException;
 import com.RestoReserve.api.exception.GlobalExceptionHandler.ResourceNotFoundException;
 import com.RestoReserve.api.model.Mesa;
 import com.RestoReserve.api.model.EstadoMesa;
@@ -32,6 +33,9 @@ public class MesaService {
     }
 
     public MesaResponseDTO guardar(MesaRequestDTO dto) {
+        if (dto.capacidad() <= 0) {
+            throw new BadRequestException("La capacidad debe ser mayor a 0");
+        }
         Mesa mesa = new Mesa();
         mesa.setNumeroDeMesa(dto.numeroDeMesa());
         mesa.setCapacidad(dto.capacidad());

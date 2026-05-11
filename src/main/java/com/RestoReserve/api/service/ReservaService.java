@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.RestoReserve.api.dto.ReservaRequestDTO;
 import com.RestoReserve.api.dto.ReservaResponseDTO;
+import com.RestoReserve.api.exception.GlobalExceptionHandler.BadRequestException;
 import com.RestoReserve.api.exception.GlobalExceptionHandler.ResourceNotFoundException;
 import com.RestoReserve.api.model.EstadoReserva;
 import com.RestoReserve.api.model.Mesa;
@@ -48,7 +49,7 @@ public class ReservaService {
 
     public ReservaResponseDTO obtenerPorId(Long id) {
         Reserva reserva = reservaRepository.findById(id)
-            .orElseThrow(() -> new ResourceNotFoundException("Reserva no encontrada"));
+            .orElseThrow(() -> new ResourceNotFoundException("Reserva no encontrada con id: " + id));
         return ReservaResponseDTO.fromEntity(reserva);
     }
 
@@ -58,6 +59,10 @@ public class ReservaService {
 
         var usuario = usuarioRepository.findByEmail(email)
             .orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado con email: " + email));
+
+        if (dto.numeropersonas() > mesa.getCapacidad()) {
+            throw new BadRequestException("El número de personas excede la capacidad de la mesa (" + mesa.getCapacidad() + ")");
+        }
 
         Reserva reserva = new Reserva();
         reserva.setFechahora(dto.fechahora());
@@ -88,7 +93,7 @@ public class ReservaService {
 
     public void eliminar(Long id) {
         if (!reservaRepository.existsById(id)) {
-            throw new ResourceNotFoundException("Reserva no encontrada");
+            throw new ResourceNotFoundException("Reserva no encontrada con id: " + id);
         }
         reservaRepository.deleteById(id);
     }
