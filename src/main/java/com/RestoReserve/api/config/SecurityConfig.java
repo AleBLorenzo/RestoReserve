@@ -27,12 +27,12 @@ public class SecurityConfig {
             .authorizeHttpRequests(auth -> auth
                 // Públicos
                 .requestMatchers("/api/v1/auth/**").permitAll()
-                .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
+                .requestMatchers("/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
                 // Tables - solo ADMIN
-                .requestMatchers(HttpMethod.GET, "/api/v1/tables").hasRole("ADMIN")
-                .requestMatchers(HttpMethod.POST, "/api/v1/tables").hasRole("ADMIN")
-                .requestMatchers(HttpMethod.PUT, "/api/v1/tables/**").hasRole("ADMIN")
-                .requestMatchers(HttpMethod.DELETE, "/api/v1/tables/**").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.GET, "/api/v1/tables").hasAuthority("ADMIN")
+                .requestMatchers(HttpMethod.POST, "/api/v1/tables").hasAuthority("ADMIN")
+                .requestMatchers(HttpMethod.PUT, "/api/v1/tables/**").hasAuthority("ADMIN")
+                .requestMatchers(HttpMethod.DELETE, "/api/v1/tables/**").hasAuthority("ADMIN")
                 // Reservations - autenticados
                 .requestMatchers("/api/v1/reservations/**").authenticated()
                 .anyRequest().authenticated()
