@@ -3,22 +3,23 @@ package com.RestoReserve.api.service;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.RestoReserve.api.dto.MesaRequestDTO;
 import com.RestoReserve.api.dto.MesaResponseDTO;
 import com.RestoReserve.api.exception.GlobalExceptionHandler.BadRequestException;
 import com.RestoReserve.api.exception.GlobalExceptionHandler.ResourceNotFoundException;
-import com.RestoReserve.api.model.Mesa;
 import com.RestoReserve.api.model.EstadoMesa;
+import com.RestoReserve.api.model.Mesa;
 import com.RestoReserve.api.repository.MesaRepository;
 
+import lombok.RequiredArgsConstructor;
+
 @Service
+@RequiredArgsConstructor
 public class MesaService {
 
-    @Autowired
-    private MesaRepository mesaRepository;
+    private final MesaRepository mesaRepository;
 
     public List<MesaResponseDTO> listar() {
         return mesaRepository.findAll().stream()

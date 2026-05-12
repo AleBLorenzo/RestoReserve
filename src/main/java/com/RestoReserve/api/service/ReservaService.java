@@ -4,7 +4,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.RestoReserve.api.dto.ReservaRequestDTO;
@@ -18,19 +17,17 @@ import com.RestoReserve.api.repository.MesaRepository;
 import com.RestoReserve.api.repository.ReservaRepository;
 import com.RestoReserve.api.repository.UsuarioRepository;
 
+import lombok.RequiredArgsConstructor;
+
 @Service
+@RequiredArgsConstructor
 public class ReservaService {
 
     private static final int MARGEN_HORAS = 2;
 
-    @Autowired
-    private ReservaRepository reservaRepository;
-
-    @Autowired
-    private MesaRepository mesaRepository;
-
-    @Autowired
-    private UsuarioRepository usuarioRepository;
+    private final ReservaRepository reservaRepository;
+    private final MesaRepository mesaRepository;
+    private final UsuarioRepository usuarioRepository;
 
     public List<ReservaResponseDTO> listarTodos() {
         return reservaRepository.findAll().stream()
