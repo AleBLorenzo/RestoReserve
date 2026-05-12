@@ -23,9 +23,9 @@ public interface ReservaRepository extends JpaRepository<Reserva, Long> {
     List<Reserva> findByUsuarioEmail(String email);
 
     // Buscar reservas activas de una mesa en un rango de 2 horas
-    @Query("SELECT r FROM Reserva r JOIN r.mesas m WHERE r.estado <> 'CANCELADA' AND m.id = :mesaId AND r.fechahora BETWEEN :inicio AND :fin")
+    @Query("SELECT r FROM Reserva r WHERE r.estado <> 'CANCELADA' AND :mesa MEMBER OF r.mesas AND r.fechahora BETWEEN :inicio AND :fin")
     List<Reserva> findReservasEnFranjaHoraria(
-        @Param("mesaId") Long mesaId,
+        @Param("mesa") Long mesaId,
         @Param("inicio") LocalDateTime inicio,
         @Param("fin") LocalDateTime fin
     );

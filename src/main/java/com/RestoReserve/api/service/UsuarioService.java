@@ -2,6 +2,7 @@ package com.RestoReserve.api.service;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.RestoReserve.api.exception.GlobalExceptionHandler.BadRequestException;
@@ -9,13 +10,11 @@ import com.RestoReserve.api.exception.GlobalExceptionHandler.ResourceNotFoundExc
 import com.RestoReserve.api.model.Usuario;
 import com.RestoReserve.api.repository.UsuarioRepository;
 
-import lombok.RequiredArgsConstructor;
-
 @Service
-@RequiredArgsConstructor
 public class UsuarioService {
 
-    private final UsuarioRepository usuarioRepository;
+    @Autowired
+    private UsuarioRepository usuarioRepository;
 
     public List<Usuario> listar() {
         return usuarioRepository.findAll();
