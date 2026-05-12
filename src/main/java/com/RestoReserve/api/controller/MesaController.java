@@ -2,6 +2,7 @@ package com.RestoReserve.api.controller;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -20,14 +21,13 @@ import com.RestoReserve.api.model.EstadoMesa;
 import com.RestoReserve.api.service.MesaService;
 
 import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/api/v1/tables")
-@RequiredArgsConstructor
 public class MesaController {
 
-    private final MesaService mesaService;
+    @Autowired
+    private MesaService mesaService;
 
     @GetMapping
     public ResponseEntity<List<MesaResponseDTO>> listarMesas() {
