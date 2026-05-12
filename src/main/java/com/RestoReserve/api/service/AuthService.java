@@ -1,5 +1,6 @@
 package com.RestoReserve.api.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -7,21 +8,24 @@ import com.RestoReserve.api.config.JwtService;
 import com.RestoReserve.api.dto.AuthRequestDTO;
 import com.RestoReserve.api.dto.AuthResponseDTO;
 import com.RestoReserve.api.dto.RegisterRequestDTO;
-import com.RestoReserve.api.exception.GlobalExceptionHandler.ConflictException;
+import com.RestoReserve.api.exception.GlobalExceptionHandler.BadRequestException;
 import com.RestoReserve.api.exception.GlobalExceptionHandler.UnauthorizedException;
-import com.RestoReserve.api.model.TipoUsuario;
+import com.RestoReserve.api.exception.GlobalExceptionHandler.ConflictException;
 import com.RestoReserve.api.model.Usuario;
+import com.RestoReserve.api.model.TipoUsuario;
 import com.RestoReserve.api.repository.UsuarioRepository;
 
-import lombok.RequiredArgsConstructor;
-
 @Service
-@RequiredArgsConstructor
 public class AuthService {
 
-    private final UsuarioRepository usuarioRepository;
-    private final PasswordEncoder passwordEncoder;
-    private final JwtService jwtService;
+    @Autowired
+    private UsuarioRepository usuarioRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private JwtService jwtService;
 
     public AuthResponseDTO login(AuthRequestDTO request) {
         Usuario usuario = usuarioRepository.findByEmail(request.username())
