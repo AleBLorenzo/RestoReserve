@@ -9,10 +9,13 @@ import org.springframework.stereotype.Service;
 import com.RestoReserve.api.dto.ReservaRequestDTO;
 import com.RestoReserve.api.dto.ReservaResponseDTO;
 import com.RestoReserve.api.exception.GlobalExceptionHandler.BadRequestException;
+import com.RestoReserve.api.exception.GlobalExceptionHandler.ForbiddenException;
 import com.RestoReserve.api.exception.GlobalExceptionHandler.ResourceNotFoundException;
+import com.RestoReserve.api.model.EstadoPenalizacion;
 import com.RestoReserve.api.model.EstadoReserva;
 import com.RestoReserve.api.model.Mesa;
 import com.RestoReserve.api.model.Reserva;
+import com.RestoReserve.api.model.Usuario;
 import com.RestoReserve.api.repository.MesaRepository;
 import com.RestoReserve.api.repository.ReservaRepository;
 import com.RestoReserve.api.repository.UsuarioRepository;
@@ -65,6 +68,9 @@ public class ReservaService {
         var usuario = usuarioRepository.findByEmail(email)
             .orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado con email: " + email));
 
+        if (usuario.getPenalizacion().equals(EstadoPenalizacion.BANNED)) {
+            throw new ForbiddenException("User is banned due to multiple late cancellations");
+        }
         // Validar capacidad
         if (dto.numeropersonas() > mesa.getCapacidad()) {
             throw new BadRequestException("El número de personas excede la capacidad de la mesa (" + mesa.getCapacidad() + ")");
@@ -105,6 +111,22 @@ public class ReservaService {
     public void cancelar(Long id) {
         Reserva reserva = reservaRepository.findById(id)
             .orElseThrow(() -> new ResourceNotFoundException("Reserva no encontrada"));
+
+        Usuario usuario = reserva.getUsuario();
+
+        LocalDateTime now = LocalDateTime.now();
+
+        LocalDateTime reservationTime = reserva.getFechahora();
+        LocalDateTime limit = reservationTime.minusHours(2);
+
+        if (now.isAfter(limit)) {
+                usuario.setPenalizationPoints(usuario.getPenalizationPoints() + 2);
+                if (usuario.getPenalizationPoints() >= 6) {
+                    usuario.setPenalizacion(EstadoPenalizacion.BANNED);
+                }
+                usuarioRepository.save(usuario);  
+          }
+
         reserva.setEstado(EstadoReserva.CANCELADA);
         reservaRepository.save(reserva);
     }

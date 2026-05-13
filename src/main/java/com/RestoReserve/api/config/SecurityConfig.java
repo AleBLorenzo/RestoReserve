@@ -33,6 +33,11 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.POST, "/api/v1/tables").hasAuthority("ADMIN")
                 .requestMatchers(HttpMethod.PUT, "/api/v1/tables/**").hasAuthority("ADMIN")
                 .requestMatchers(HttpMethod.DELETE, "/api/v1/tables/**").hasAuthority("ADMIN")
+                
+                //Usuario - solo ADMIN
+                .requestMatchers(HttpMethod.GET, "/api/v1/users").hasAuthority("ADMIN")
+                .requestMatchers(HttpMethod.PUT, "/api/v1/users/**").hasAuthority("ADMIN")
+                .requestMatchers(HttpMethod.DELETE, "/api/v1/users/**").hasAuthority("ADMIN")
                 // Reservations - autenticados
                 .requestMatchers("/api/v1/reservations/**").authenticated()
                 .anyRequest().authenticated()
