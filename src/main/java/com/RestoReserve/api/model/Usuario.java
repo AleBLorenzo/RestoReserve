@@ -45,6 +45,13 @@ public class Usuario {
     private String contrasena;
 
     @Column(nullable = false)
+    private int penalizationPoints;
+
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private EstadoPenalizacion penalizacion = EstadoPenalizacion.ACTIVE;
+
+    @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private TipoUsuario rol = TipoUsuario.USER;
 
