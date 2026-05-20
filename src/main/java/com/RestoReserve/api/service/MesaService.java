@@ -1,5 +1,6 @@
 package com.RestoReserve.api.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -23,20 +24,37 @@ public class MesaService {
 
     public List<MesaResponseDTO> listar() {
         return mesaRepository.findAll().stream()
-            .map(MesaResponseDTO::fromEntity)
-            .collect(Collectors.toList());
+                .map(MesaResponseDTO::fromEntity)
+                .collect(Collectors.toList());
+    }
+
+    public List<MesaResponseDTO> listarporCantidadPersonas(int cantidad) {
+        
+        List<Mesa> mesas = mesaRepository.findAll();
+      
+        List<Mesa> mesasDisponibles = new ArrayList<>();
+
+        for (Mesa elem : mesas) {
+            if (elem.getCapacidad() >= cantidad && elem.getEstado().equals(EstadoMesa.LIBRE)) {
+                mesasDisponibles.add(elem);
+            }
+        }
+
+        return mesasDisponibles.stream()
+                .map(MesaResponseDTO::fromEntity)
+                .collect(Collectors.toList());
     }
 
     public MesaResponseDTO obtenerPorId(Long id) {
         Mesa mesa = mesaRepository.findById(id)
-            .orElseThrow(() -> new ResourceNotFoundException("Mesa no encontrada con id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Mesa no encontrada con id: " + id));
         return MesaResponseDTO.fromEntity(mesa);
     }
 
     public List<MesaResponseDTO> obtenerVip() {
         return mesaRepository.findByVip(true).stream()
-        .map(MesaResponseDTO::fromEntity)
-        .collect(Collectors.toList());
+                .map(MesaResponseDTO::fromEntity)
+                .collect(Collectors.toList());
     }
 
     public MesaResponseDTO guardar(MesaRequestDTO dto) {
@@ -53,7 +71,7 @@ public class MesaService {
 
     public MesaResponseDTO actualizar(Long id, MesaRequestDTO dto) {
         Mesa existente = mesaRepository.findById(id)
-            .orElseThrow(() -> new ResourceNotFoundException("Mesa no encontrada con id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Mesa no encontrada con id: " + id));
         existente.setNumeroDeMesa(dto.numeroDeMesa());
         existente.setCapacidad(dto.capacidad());
         existente = mesaRepository.save(existente);
@@ -62,7 +80,7 @@ public class MesaService {
 
     public MesaResponseDTO cambiarEstado(Long id, EstadoMesa estado) {
         Mesa mesa = mesaRepository.findById(id)
-            .orElseThrow(() -> new ResourceNotFoundException("Mesa no encontrada"));
+                .orElseThrow(() -> new ResourceNotFoundException("Mesa no encontrada"));
         mesa.setEstado(estado);
         mesa = mesaRepository.save(mesa);
         return MesaResponseDTO.fromEntity(mesa);

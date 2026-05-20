@@ -39,6 +39,11 @@ public class MesaController {
         return ResponseEntity.ok(mesaService.obtenerPorId(id));
     }
 
+    @GetMapping("/available")
+    public ResponseEntity<List<MesaResponseDTO>> obtenerMesaPorCantidad(@RequestParam int Cantidad) {
+        return ResponseEntity.ok(mesaService.listarporCantidadPersonas(Cantidad));
+    }
+
     @PostMapping
     public ResponseEntity<MesaResponseDTO> crearMesa(@Valid @RequestBody MesaRequestDTO dto) {
         return new ResponseEntity<>(mesaService.guardar(dto), HttpStatus.CREATED);
