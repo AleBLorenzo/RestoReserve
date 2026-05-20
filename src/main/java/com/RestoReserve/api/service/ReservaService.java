@@ -76,7 +76,7 @@ public class ReservaService {
             throw new BadRequestException("El número de personas excede la capacidad de la mesa (" + mesa.getCapacidad() + ")");
         }
 
-        if (usuario.getReservas().size() >= 3 && mesa.isVip()) {
+        if (usuario.getReservas().size() <= 3 && mesa.isVip()) {
             throw new ForbiddenException("Solo clientes habituales pueden reservar mesas VIP");
         }
 
