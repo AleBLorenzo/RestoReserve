@@ -32,8 +32,12 @@ public class Mesa {
     @Column(nullable = false)
     private int capacidad;
 
+    @Column(nullable= false)
+    private boolean vip ;
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private EstadoMesa estado = EstadoMesa.LIBRE;
+
 
 }

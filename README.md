@@ -28,6 +28,7 @@ export DB_PORT=5432
 export DB_NAME=resto_db
 export DB_USER=resto
 export DB_PASSWORD=1234
+export JWT_SECRET=RVOdiPUjHSvoZZagK92w/huOTY4NdVcfChzxzxzE800=
 ```
 
 ### Ejecutar

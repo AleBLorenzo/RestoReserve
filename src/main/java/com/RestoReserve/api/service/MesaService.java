@@ -33,6 +33,12 @@ public class MesaService {
         return MesaResponseDTO.fromEntity(mesa);
     }
 
+    public List<MesaResponseDTO> obtenerVip() {
+        return mesaRepository.findByVip(true).stream()
+        .map(MesaResponseDTO::fromEntity)
+        .collect(Collectors.toList());
+    }
+
     public MesaResponseDTO guardar(MesaRequestDTO dto) {
         if (dto.capacidad() <= 0) {
             throw new BadRequestException("La capacidad debe ser mayor a 0");
